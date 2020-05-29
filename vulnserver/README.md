@@ -18,9 +18,11 @@ weird way of filling buffer. need to be careful with stack alignment.
 
 can be exploited using egghunter technique as well. I chose to re-use the socket to retrieve the second stage shellcode. While receiving the second stage payload, another bof occurs. Exploit the eip overwrite to jmp to esp and execute the shellcode
 
-### LTER/poc.py
+### LTER/poc_eip-overwrite.py
 
 when buffer length is short(around 3500), eip get overwritten. only characters in [0x01,0x79] are allowed. Use msfvenom to generate a PURELY alphanumeric shellcode by specifying the BufferRegister to be esp.
+
+### LTER/poc_seh-overwrite.py
 
 when buffer length is long(around 4000), seh get overwritten. Much more complicated than the case above. Need to write the shellcode with limited character set and perform three jmp to reach the beginning of the buffer. Then perform the sub encoding technique to push the actual shellcode onto the stack, finally handover to the actual shellcode and execute.
 
