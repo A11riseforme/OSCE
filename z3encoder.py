@@ -41,7 +41,7 @@ shellcode = shellcode[::-1]
 shellcode += "\x41"*(math.ceil(len(shellcode)/4)*4-len(shellcode))
 
 # define the bad_chars here
-bad_chars = [0x0a, 0x0d, 0x2F, 0x3A, 0x3F, 0x40]
+bad_chars = [0x0a, 0x0d, 0x2F, 0x3A, 0x3F, 0x40, 0x50]
 
 is_zerofied = True
 
@@ -125,7 +125,8 @@ def zerofy():
 final = b""
 
 # need "\x25" to perform `and` operation to zerofy eax
-if 0x25 in bad_chars:
+# need "\x50" to perform `push eax` operation to push the instruction onto the stack
+if 0x25 in bad_chars or 0x50 in bad_chars:
     print("cannot be decoded!")
     sys.exit(0)
 
