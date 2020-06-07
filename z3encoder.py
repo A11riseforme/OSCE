@@ -1,9 +1,6 @@
-#!/usr/bin/env python
-
 from z3 import *
 from pwn import *
 import sys
-
 
 # egghunter shellcode
 shellcode =  ""
@@ -41,8 +38,7 @@ shellcode = shellcode[::-1]
 shellcode += "\x41"*(math.ceil(len(shellcode)/4)*4-len(shellcode))
 
 # define the bad_chars here
-bad_chars = [0x0a, 0x0d, 0x2F, 0x3A, 0x3F, 0x40, 0x50]
-
+bad_chars = [0x0a, 0x0d, 0x2F, 0x3A, 0x3F, 0x40]
 is_zerofied = True
 
 def solve(leftover,target):
@@ -66,7 +62,14 @@ def solve(leftover,target):
                 sign.append(Int('sign_'+str(i)))
 
             for i in sign:
-                s.add(Or(i==1,i==-1))
+                # cannot perform sub
+                if 0x2d in bad_chars:
+                    s.add(i==1)
+                # cannot perform add
+                elif 0x05 in bad_chars:
+                    s.add(i==-1)
+                else:
+                    s.add(Or(i==1,i==-1))
 
             for i in var:
                 for k in range(0,32,8):
@@ -125,8 +128,8 @@ def zerofy():
 final = b""
 
 # need "\x25" to perform `and` operation to zerofy eax
-# need "\x50" to perform `push eax` operation to push the instruction onto the stack
-if 0x25 in bad_chars or 0x50 in bad_chars:
+# need either "\x2d" to perform `sub` operation or "\x05" to perform `add` operation
+if 0x25 in bad_chars or (0x2d in bad_chars and 0x05 in bad_chars):
     print("cannot be decoded!")
     sys.exit(0)
 
