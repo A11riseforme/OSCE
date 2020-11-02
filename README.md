@@ -1,5 +1,5 @@
 # OSCE
-* [x] checked   # [checkbox:checked]
+
 Some tools I wrote/modified while attempting the CTP course.
 
 All the scripts are provided as is, use at your own risk.
